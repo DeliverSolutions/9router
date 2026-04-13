@@ -5,11 +5,33 @@ WORKDIR /app
 
 FROM base AS builder
 
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+ARG NO_PROXY
+ARG http_proxy
+ARG https_proxy
+ARG no_proxy
+
+ENV HTTP_PROXY=$HTTP_PROXY
+ENV HTTPS_PROXY=$HTTPS_PROXY
+ENV NO_PROXY=$NO_PROXY
+ENV http_proxy=$http_proxy
+ENV https_proxy=$https_proxy
+ENV no_proxy=$no_proxy
+
+ENV npm_config_audit=false
+ENV npm_config_fund=false
+ENV npm_config_progress=false
+ENV npm_config_fetch_retries=5
+ENV npm_config_fetch_retry_mintimeout=20000
+ENV npm_config_fetch_retry_maxtimeout=120000
+ENV npm_config_fetch_timeout=600000
+
 RUN apk --no-cache upgrade && apk --no-cache add nodejs npm python3 make g++ linux-headers
 
 COPY package.json ./
 RUN --mount=type=cache,target=/root/.npm \
-  npm install
+  npm install --no-audit --no-fund
 
 COPY . ./
 ENV NEXT_TELEMETRY_DISABLED=1

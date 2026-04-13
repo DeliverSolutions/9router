@@ -14,9 +14,11 @@ services:
         no_proxy: ${no_proxy:-}
     restart: unless-stopped
 
-    expose:
-      - "20128"
-    
+    #expose:
+    #  - "20128"
+    ports:
+      - "20128:20128"
+
     environment:
       TZ: ${TZ:-Asia/Ho_Chi_Minh}
       NODE_ENV: production
