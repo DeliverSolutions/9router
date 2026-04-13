@@ -1,0 +1,53 @@
+name: 9router-stack
+
+services:
+  9router:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+
+    expose:
+      - "20128"
+
+    environment:
+      TZ: ${TZ:-Asia/Ho_Chi_Minh}
+      NODE_ENV: production
+      PORT: 20128
+      HOSTNAME: 0.0.0.0
+
+      # Auth & security
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-long-random-secret}
+      INITIAL_PASSWORD: ${INITIAL_PASSWORD:-change-me}
+      API_KEY_SECRET: ${API_KEY_SECRET:-endpoint-proxy-api-key-secret}
+      MACHINE_ID_SALT: ${MACHINE_ID_SALT:-endpoint-proxy-salt}
+      REQUIRE_API_KEY: ${REQUIRE_API_KEY:-false}
+      AUTH_COOKIE_SECURE: ${AUTH_COOKIE_SECURE:-true}
+
+      # Data + observability
+      DATA_DIR: /app/data
+      ENABLE_REQUEST_LOGS: ${ENABLE_REQUEST_LOGS:-false}
+      OBSERVABILITY_ENABLED: ${OBSERVABILITY_ENABLED:-true}
+
+      # URL contract (internal + external)
+      BASE_URL: ${BASE_URL:-https://9router.vip.io.vn}
+      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-https://9router.vip.io.vn}
+      CLOUD_URL: ${CLOUD_URL:-https://9router.vip.io.vn}
+      NEXT_PUBLIC_CLOUD_URL: ${NEXT_PUBLIC_CLOUD_URL:-https://9router.vip.io.vn}
+
+      # Keep local traffic local
+      NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,9router}
+
+    volumes:
+      - 9router_data:/app/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:20128/v1/models >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 45s
+
+volumes:
+  9router_data:
+    name: 9router_data
