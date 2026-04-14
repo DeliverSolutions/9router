@@ -43,7 +43,7 @@ services:
       NEXT_PUBLIC_CLOUD_URL: ${NEXT_PUBLIC_CLOUD_URL:-https://9router.vip.io.vn}
 
       # Keep local traffic local
-      NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,9router}
+      NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,9router,9router.vip.io.vn}
 
     volumes:
       - 9router_data:/app/data
